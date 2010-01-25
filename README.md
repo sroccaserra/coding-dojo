@@ -10,11 +10,11 @@ Add `coding-dojo.el` to your path, then add it to the autoload list:
 
     (autoload 'dojo-new-project "coding-dojo" nil t)
 
-and set the \*dojo-template-dir* variable to point to the coding-dojo `languages` directory.
+and set the `*dojo-template-dir*` variable to point to the coding-dojo `languages` directory (or your own template dir).
 
 Then call `dojo-new-project` when you want to create a new project.
 
-`dojo-new-project` will ask you in which language you want to work, then the name of the project.
+`dojo-new-project` will ask you the name of the project, then in which language you want to work.
 
 
 Adding new languages
