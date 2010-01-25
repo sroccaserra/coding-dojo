@@ -2,7 +2,7 @@
 ;; coding-dojo.el
 ;;
 
-(defvar *dojo-template-dir* "~/Dropbox/.emacs.d/coding-dojo")
+(defvar *dojo-template-dir* "~/Developer/github/coding-dojo/templates")
 (defvar *dojo-project-dir* "~/Dropbox/Developer/CodingDojo")
 
 (defvar *dojo-find-command* "find %s -type f")
