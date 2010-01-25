@@ -23,6 +23,3 @@ Adding new languages
 To add a new language craddle, just add a directory named after your language in the `languages` directory.
 
 In this directory, put all the required files. All `$main` strings within these files will be replaced by the name you give to the project, and the file named `main.ext` will be renamed after your project's name (see examples in the `languages` directory).
-
-
-

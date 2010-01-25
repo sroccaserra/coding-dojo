@@ -8,7 +8,7 @@
 (defvar *dojo-find-command* "find %s -type f")
 (defvar *dojo-prune-paths* '("*/.git/*" "*/.hg/*"))
 
-(defvar *dojo-after-new-project-command* "git init && git add . && git commit -m 'first'")
+(defvar *dojo-after-new-project-command* nil "git init && git add . && git commit -m 'first'")
 
 (defstruct dojo-project
   name
@@ -29,6 +29,8 @@
   (let* ((project (make-dojo-project :name project-name
                                      :language (upcase-initials language)))
          (project-dir (dojo-project-dir-for project)))
+    (when (file-exists-p project-dir)
+      (error "Project %s in language %s already exists." project-name language))
     (setf (dojo-project-dir project) project-dir)
     (setf (dojo-project-main-file project) (dojo-find-main-file project))
 

@@ -101,3 +101,11 @@
   (test-in-project
    '(lambda (project)
       (assert-t (file-exists-p (dojo-find-test-file project))))))
+
+(deftest "Creating an existing project fails"
+  (let* ((project-name "autoTest")
+        (language "lua")
+        (project (dojo-create-project project-name language)))
+    (assert-error "already exists"
+                  (dojo-create-project project-name language))
+    (dojo-delete-project project)))
