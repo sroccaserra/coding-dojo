@@ -1,0 +1,8 @@
+;;
+;; test.elk
+;;
+;; Uses elk-test, see http://nschum.de/src/emacs/elk-test/
+;;
+
+(deftest "Failing"
+  (assert-t nil))

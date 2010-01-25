@@ -1,0 +1,3 @@
+task :default do
+    ruby %{-Ilib -Itest 'test/test_main.rb'}
+end
