@@ -6,19 +6,26 @@ Emacs lib to quickly create a small TDD craddle in various languages.
 Usage
 -----
 
-Add `coding-dojo.el` to your path, then add it to the autoload list:
+Call the interactive function `dojo-new-project`. It will ask you for a project name in the minibuffer, then a language (with auto completion).
+
+That's it, it will create a TDD craddle for you, in a directory named `ProjectName-Language`.
+
+Installation
+------------
+
+- Add `coding-dojo.el` to your path, then add it to the autoload list:
 
     (autoload 'dojo-new-project "coding-dojo" nil t)
 
-and set the `*dojo-template-dir*` variable to point to the coding-dojo `languages` directory (or your own template dir).
+- Set the `*dojo-template-dir*` variable to point to the coding-dojo `languages` directory (or your own template dir).
 
-Then call `dojo-new-project` when you want to create a new project.
+- Set the `*dojo-project-dir*` variable to point to the directory where you want your new projects to be created.
 
-`dojo-new-project` will ask you the name of the project, then in which language you want to work.
+That's it, now call `dojo-new-project` when you want to create a new project.
 
 
-Adding new languages
---------------------
+Adding a new language
+---------------------
 
 To add a new language craddle, just add a directory named after your language in the `languages` directory.
 
