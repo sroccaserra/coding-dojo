@@ -25,9 +25,9 @@
           (upcase-initials (dojo-project-name project))
           (dojo-project-language project)))
 
-(defun dojo-create-project (language project-name)
-  (let* ((project (make-dojo-project :language (upcase-initials language)
-                                     :name project-name))
+(defun dojo-create-project (project-name language)
+  (let* ((project (make-dojo-project :name project-name
+                                     :language (upcase-initials language)))
          (project-dir (dojo-project-dir-for project)))
     (setf (dojo-project-dir project) project-dir)
     (setf (dojo-project-main-file project) (dojo-find-main-file project))
@@ -97,11 +97,11 @@
                                      "")
                   "\n")))
 
-(defun dojo-new-project (language project-name)
+(defun dojo-new-project (project-name language)
   (interactive (let ((languages (map 'list 'downcase (dojo-find-languages))))
-                 (list (completing-read "Language: " languages nil t)
-                       (read-from-minibuffer "Project Name: "))))
-  (let ((project (dojo-create-project language project-name)))
+                 (list (read-from-minibuffer "Project Name: ")
+                       (completing-read "Language: " languages nil t))))
+  (let ((project (dojo-create-project project-name language)))
     (dojo-substitute-variables project)
     (let ((main-file (dojo-find-main-file project)))
       (dojo-rename-main-file project)
