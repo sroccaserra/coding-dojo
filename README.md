@@ -16,7 +16,7 @@ Installation
 - Add `coding-dojo.el` to your path, then add the `dojo-new-project` command to the autoload list:
         (autoload 'dojo-new-project "coding-dojo" nil t)
 - Customize the `coding-dojo` group, setting:
-  - the *dojo-template-dir*` variable to point to the coding-dojo `languages` directory (or your own template dir).
+  - the `*dojo-template-dir*` variable to point to the coding-dojo `languages` directory (or your own template dir).
   - the `*dojo-project-dir*` variable to point to the directory where you want your new projects to be created.
 
 That's it, now call `dojo-new-project` when you want to create a new project.
