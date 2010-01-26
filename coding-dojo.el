@@ -1,14 +1,38 @@
 ;;
 ;; coding-dojo.el
 ;;
+;; See http://github.com/sroccaserra/coding-dojo
+;;
 
-(defvar *dojo-template-dir* "~/Developer/github/coding-dojo/languages")
-(defvar *dojo-project-dir* "~/Dropbox/Developer/CodingDojo")
+;;;
+;; Customization
 
-(defvar *dojo-find-command* "find %s -type f")
-(defvar *dojo-prune-paths* '("*/.git/*" "*/.hg/*"))
+(defgroup coding-dojo nil
+  "Customizations for `coding-dojo'. See http://github.com/sroccaserra/coding-dojo")
 
-(defvar *dojo-after-new-project-command* nil "git init && git add . && git commit -m 'first'")
+(defcustom *dojo-template-dir* "~/Developer/github/coding-dojo/languages"
+  "Where your language templates are. The 'languages' direcory that comes with `coding-dojo.el' is a good starting point."
+  :group 'coding-dojo
+  :type '(directory))
+(defcustom *dojo-project-dir* "~/Dropbox/Developer/CodingDojo"
+  "Where you want `dojo-new-project' to create your new projects."
+  :group 'coding-dojo
+  :type '(directory))
+(defcustom *dojo-find-command* "find %s -type f"
+  "The 'find' command used to list files"
+  :group 'coding-dojo
+  :type '(string))
+(defcustom *dojo-prune-paths* '("*/.git/*" "*/.hg/*")
+  "Paths excluded from the file list"
+  :group 'coding-dojo
+  :type '(repeat string))
+(defcustom *dojo-after-new-project-command* ""
+  "Example: \"git init && git add . && git commit -m 'first'\""
+  :group 'coding-dojo
+  :type '(string))
+
+;;;
+;; Code
 
 (defstruct dojo-project
   name
@@ -107,7 +131,7 @@
     (dojo-substitute-variables project)
     (let ((main-file (dojo-find-main-file project)))
       (dojo-rename-main-file project)
-      (when *dojo-after-new-project-command*
+      (unless (eq "" *dojo-after-new-project-command*)
         (save-excursion
           (find-file (dojo-project-dir project))
           (shell-command *dojo-after-new-project-command*)
