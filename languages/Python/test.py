@@ -2,6 +2,8 @@
 # test.py
 #
 
+""" If you use doctest (the default testing method for this template), you can ignore this file."""
+
 import unittest
 from $main import *
 
