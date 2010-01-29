@@ -2,7 +2,12 @@
 # test.py
 #
 
-""" If you use doctest (the default testing method for this template), you can ignore this file."""
+""" Doctests can be written in the main file, unittest can be written here.
+
+More info here: http://docs.python.org/library/doctest.html
+And here: http://docs.python.org/library/unittest.html
+
+"""
 
 import unittest
 from $main import *
