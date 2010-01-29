@@ -33,6 +33,6 @@ In this directory, put all the required files. All `$main` strings within these 
 Coding Dojo Tests
 -----------------
 
-The lib itself was written using TDD. Tests for `coding-dojo.el` are in the `coding-dojo.elk` file. They use [elk-test][]
+The lib itself was written using TDD. Tests for `coding-dojo.el` are in the `coding-dojo.elk` file. They use [elk-test][].
 
 [elk-test]: http://nschum.de/src/emacs/elk-test/
