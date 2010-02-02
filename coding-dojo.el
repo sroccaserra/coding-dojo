@@ -10,7 +10,7 @@
 (defgroup coding-dojo nil
   "Customizations for `coding-dojo'. See http://github.com/sroccaserra/coding-dojo")
 
-(defcustom *dojo-template-dir* "~/Developer/github/coding-dojo/languages"
+(defcustom *dojo-template-dir* "~/Developer/coding-dojo/languages"
   "Where your language templates are. The 'languages' direcory that comes with `coding-dojo.el' is a good starting point."
   :group 'coding-dojo
   :type '(directory))
