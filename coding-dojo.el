@@ -36,9 +36,7 @@
 
 (defstruct dojo-project
   name
-  language
-  dir
-  main-file)
+  language)
 
 (defun dojo-template-dir (language)
   (concat *dojo-template-dir* "/" language))
@@ -49,29 +47,29 @@
           (upcase-initials (dojo-project-name project))
           (dojo-project-language project)))
 
-(defun dojo-create-project (project-name language)
-  (let* ((project (make-dojo-project :name project-name
-                                     :language (upcase-initials language)))
-         (project-dir (dojo-project-dir-for project)))
-    (when (file-exists-p project-dir)
-      (error "Project %s in language %s already exists." project-name language))
-    (setf (dojo-project-dir project) project-dir)
-    (setf (dojo-project-main-file project) (dojo-find-main-file project))
+(defun dojo-project-exists (project)
+    (file-exists-p (dojo-project-dir-for project)))
 
+(defun dojo-create-project (project)
+  (let ((project-name (dojo-project-name project))
+        (language (dojo-project-language project))
+        (project-dir (dojo-project-dir-for project)))
+    (when (dojo-project-exists project)
+      (error "Project %s in language %s already exists." project-name language))
     (make-directory project-dir t)
     (dired-copy-file-recursive (dojo-template-dir language) project-dir
                                nil nil t 'always)
     project))
 
 (defun dojo-delete-project (project)
-  (dired-delete-file (dojo-project-dir project) 'always))
+  (dired-delete-file (dojo-project-dir-for project) 'always))
 
 (defun dojo-unexpand-home (str)
   (let ((home (shell-command-to-string "echo -n ~")))
     (replace-in-string str home "~")))
 
 (defun dojo-find-project-files (project)
-  (let* ((project-dir (dojo-project-dir project))
+  (let* ((project-dir (dojo-project-dir-for project))
          (find-command (concat (format *dojo-find-command* project-dir)
                                (dojo-prune-arguments *dojo-prune-paths*)))
          (output (shell-command-to-string find-command)))
@@ -83,7 +81,7 @@
             (dojo-find-project-files project)))
 
 (defun dojo-find-test-file (project)
-  (let ((project-dir (dojo-project-dir project)))
+  (let ((project-dir (dojo-project-dir-for project)))
     (find-if '(lambda (file)
                 (string-match (format "%s.*tests?\." project-dir)
                               file))
@@ -127,16 +125,22 @@
   (interactive (let ((languages (map 'list 'downcase (dojo-find-languages))))
                  (list (read-from-minibuffer "Project Name: ")
                        (completing-read "Language: " languages nil t))))
-  (let ((project (dojo-create-project project-name language)))
-    (dojo-substitute-variables project)
-    (let ((main-file (dojo-find-main-file project)))
-      (dojo-rename-main-file project)
-      (unless (eq "" *dojo-after-new-project-command*)
-        (save-excursion
-          (find-file (dojo-project-dir project))
-          (shell-command *dojo-after-new-project-command*)
-          (kill-buffer)))
-      (find-file (dojo-project-file main-file project-name))
-      (find-file (dojo-find-test-file project)))))
+  (let ((project (make-dojo-project :name project-name
+                                    :language (upcase-initials language))))
+    (when (dojo-project-exists project)
+      (if (y-or-n-p "Project %s in language %s already exists, delete it?")
+          (dired-delete-file (dojo-project-dir-for project) 'always)
+        (error "Project %s in language %s already exists." project-name language))
+      (dojo-create-project project)
+      (dojo-substitute-variables project)
+      (let ((main-file (dojo-find-main-file project)))
+        (dojo-rename-main-file project)
+        (unless (eq "" *dojo-after-new-project-command*)
+          (save-excursion
+            (find-file (dojo-project-dir-for project))
+            (shell-command *dojo-after-new-project-command*)
+            (kill-buffer)))
+        (find-file (dojo-project-file main-file project-name))
+        (find-file (dojo-find-test-file project))))))
 
 (provide 'coding-dojo)
