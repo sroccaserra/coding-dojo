@@ -121,6 +121,11 @@
                                      "")
                   "\n")))
 
+(defun valid-haskell-module-p (name)
+  (let ((case-fold-search nil)) ;; hello dynamic binding
+    (when (string-match-p "[A-Z][:alnum:]*" name)
+      t)))
+
 (defun dojo-new-project (project-name language)
   (interactive (let ((languages (map 'list 'downcase (dojo-find-languages))))
                  (list (read-from-minibuffer "Project Name: ")

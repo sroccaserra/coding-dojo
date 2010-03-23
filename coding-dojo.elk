@@ -111,3 +111,7 @@
     (assert-error "already exists"
                   (dojo-create-project project))
     (dojo-delete-project project)))
+
+(deftest "haskell module names"
+  (assert-t (valid-haskell-module-p "Toto1"))
+  (assert-nil (valid-haskell-module-p "toto")))
