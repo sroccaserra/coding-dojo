@@ -130,7 +130,7 @@
     (when (dojo-project-exists project)
       (if (y-or-n-p "Project %s in language %s already exists, delete it?")
           (dired-delete-file (dojo-project-dir-for project) 'always)
-        (error "Project %s in language %s already exists." project-name language))
+        (error "Project %s in language %s already exists." project-name language)))
       (dojo-create-project project)
       (dojo-substitute-variables project)
       (let ((main-file (dojo-find-main-file project)))
@@ -141,6 +141,6 @@
             (shell-command *dojo-after-new-project-command*)
             (kill-buffer)))
         (find-file (dojo-project-file main-file project-name))
-        (find-file (dojo-find-test-file project))))))
+        (find-file (dojo-find-test-file project)))))
 
 (provide 'coding-dojo)
