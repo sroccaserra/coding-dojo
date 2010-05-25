@@ -95,15 +95,15 @@
 (defun dojo-substitute-variables (project)
   (let* ((project-name (dojo-project-name project))
          (files (dojo-find-project-files project)))
-    (map nil '(lambda (file)
-                (save-excursion
-                  (with-current-buffer (find-file-noselect file t)
-                    (goto-char 0)
-                    (while (search-forward-regexp "\\$main\\>" nil t)
-                      (replace-match project-name nil t))
-                    (save-buffer)
-                    (kill-buffer))))
-         files)))
+    (mapcar '(lambda (file)
+               (save-excursion
+                 (with-current-buffer (find-file-noselect file t)
+                   (goto-char 0)
+                   (while (search-forward-regexp "\\$main\\>" nil t)
+                     (replace-match project-name nil t))
+                   (save-buffer)
+                   (kill-buffer))))
+            files)))
 
 (defun dojo-project-file (main-file project-name)
   (replace-regexp-in-string "main" project-name main-file))
@@ -127,7 +127,7 @@
       t)))
 
 (defun dojo-new-project (project-name language)
-  (interactive (let ((languages (map 'list 'downcase (dojo-find-languages))))
+  (interactive (let ((languages (mapcar 'downcase (dojo-find-languages))))
                  (list (read-from-minibuffer "Project Name: ")
                        (completing-read "Language: " languages nil t))))
   (let ((project (make-dojo-project :name project-name
