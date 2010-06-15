@@ -1,6 +1,7 @@
 ;;
 ;; coding-dojo.el
 ;;
+;; Uses copy-directory, from Emacs 23.2
 ;; See http://github.com/sroccaserra/coding-dojo
 ;;
 

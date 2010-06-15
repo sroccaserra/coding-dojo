@@ -38,6 +38,9 @@
 (defun test-in-project (test-func)
   (let ((project (make-dojo-project :name "autoTest"
                                     :language "lua")))
+    (let ((dir (dojo-project-dir-for project)))
+      (when (file-directory-p dir)
+        (delete-directory dir t)))
     (dojo-create-project project)
     (apply test-func (list project))
     (dojo-delete-project project)))
