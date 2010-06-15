@@ -103,8 +103,9 @@
                         (goto-char 0)
                         (while (search-forward-regexp "\\$main\\>" nil t)
                           (replace-match project-name nil t))
-                        (save-buffer))
-                    (kill-buffer))))))
+                        (basic-save-buffer))
+                    (flet ((y-or-n-p (prompt) t))
+                      (kill-buffer)))))))
       (mapcar #'replace-main-in-file files))))
 
 (defun dojo-project-file (main-file project-name)
