@@ -48,7 +48,7 @@
           (dojo-project-language project)))
 
 (defun dojo-project-exists (project)
-    (file-exists-p (dojo-project-dir-for project)))
+  (file-exists-p (dojo-project-dir-for project)))
 
 (defun dojo-create-project (project)
   (let ((project-name (dojo-project-name project))
@@ -56,9 +56,7 @@
         (project-dir (dojo-project-dir-for project)))
     (when (dojo-project-exists project)
       (error "Project %s in language %s already exists." project-name language))
-    (make-directory project-dir t)
-    (dired-copy-file-recursive (dojo-template-dir language) project-dir
-                               nil nil t 'always)
+    (copy-directory (dojo-template-dir language) project-dir)
     project))
 
 (defun dojo-delete-project (project)
@@ -76,34 +74,37 @@
     (split-string (dojo-unexpand-home output) "\n")))
 
 (defun dojo-find-main-file (project)
-  (find-if  '(lambda (x)
-               (string-match "main" x))
+  (find-if  (lambda (x)
+              (string-match "main" x))
             (dojo-find-project-files project)))
 
 (defun dojo-find-test-file (project)
   (let ((project-dir (dojo-project-dir-for project)))
-    (find-if '(lambda (file)
-                (string-match (format "%s.*tests?\." project-dir)
-                              file))
+    (find-if (lambda (file)
+               (string-match (format "%s.*tests?\." project-dir)
+                             file))
              (dojo-find-project-files project))))
 
 (defun dojo-prune-arguments (path-patterns)
-  (reduce '(lambda (x y)
-             (concat x " ! -path " (shell-quote-argument y)))
+  (reduce (lambda (x y)
+            (concat x " ! -path " (shell-quote-argument y)))
           (push "" path-patterns)))
 
 (defun dojo-substitute-variables (project)
   (let* ((project-name (dojo-project-name project))
          (files (dojo-find-project-files project)))
-    (mapcar '(lambda (file)
-               (save-excursion
-                 (with-current-buffer (find-file-noselect file t)
-                   (goto-char 0)
-                   (while (search-forward-regexp "\\$main\\>" nil t)
-                     (replace-match project-name nil t))
-                   (save-buffer)
-                   (kill-buffer))))
-            files)))
+    (labels ((replace-main-in-file
+              (file)
+              (save-excursion
+                (with-current-buffer (find-file-noselect file t)
+                  (unwind-protect
+                      (progn
+                        (goto-char 0)
+                        (while (search-forward-regexp "\\$main\\>" nil t)
+                          (replace-match project-name nil t))
+                        (save-buffer))
+                    (kill-buffer))))))
+      (mapcar #'replace-main-in-file files))))
 
 (defun dojo-project-file (main-file project-name)
   (replace-regexp-in-string "main" project-name main-file))
@@ -115,7 +116,7 @@
 
 (defun dojo-find-languages ()
   (let ((find-command (format "find %s -type d -maxdepth 1 -mindepth 1"
-                                                    *dojo-template-dir*)))
+                              *dojo-template-dir*)))
     (split-string (replace-in-string (shell-command-to-string find-command)
                                      ".*/\\|\n^$"
                                      "")
@@ -136,16 +137,16 @@
       (if (y-or-n-p "Project %s in language %s already exists, delete it?")
           (dired-delete-file (dojo-project-dir-for project) 'always)
         (error "Project %s in language %s already exists." project-name language)))
-      (dojo-create-project project)
-      (dojo-substitute-variables project)
-      (let ((main-file (dojo-find-main-file project)))
-        (dojo-rename-main-file project)
-        (unless (eq "" *dojo-after-new-project-command*)
-          (save-excursion
-            (find-file (dojo-project-dir-for project))
-            (shell-command *dojo-after-new-project-command*)
-            (kill-buffer)))
-        (find-file (dojo-project-file main-file project-name))
-        (find-file (dojo-find-test-file project)))))
+    (dojo-create-project project)
+    (dojo-substitute-variables project)
+    (let ((main-file (dojo-find-main-file project)))
+      (dojo-rename-main-file project)
+      (unless (eq "" *dojo-after-new-project-command*)
+        (save-excursion
+          (find-file (dojo-project-dir-for project))
+          (shell-command *dojo-after-new-project-command*)
+          (kill-buffer)))
+      (find-file (dojo-project-file main-file project-name))
+      (find-file (dojo-find-test-file project)))))
 
 (provide 'coding-dojo)

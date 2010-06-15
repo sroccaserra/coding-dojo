@@ -44,8 +44,8 @@
 
 (deftest "Project creation succeeds"
   (test-in-project
-   '(lambda (project)
-      (assert-t (file-directory-p (dojo-project-dir-for project))))))
+   (lambda (project)
+     (assert-t (file-directory-p (dojo-project-dir-for project))))))
 
 (deftest "Project removal succeeds"
   (let* ((project (make-dojo-project :name "autoTest"
@@ -58,51 +58,51 @@
   (assert-eq 2 (length (split-string "toto\ntata titi" "\n"))))
 
 (deftest "Find if"
-  (assert-nonnil (find-if  '(lambda (x) (string-match "main" x))
-                           '("toto" "test/main.lua"))))
+  (assert-nonnil (find-if (lambda (x) (string-match "main" x))
+                          '("toto" "test/main.lua"))))
 
 (deftest "Find main file"
   (test-in-project
-   '(lambda (project)
-      (assert-equal (concat *dojo-project-dir* "/AutoTest-lua/main.lua")
-                    (dojo-find-main-file project)))))
+   (lambda (project)
+     (assert-equal (concat *dojo-project-dir* "/AutoTest-lua/main.lua")
+                   (dojo-find-main-file project)))))
 
 (deftest "File list contains main"
   (test-in-project
-   '(lambda (project)
-      (assert-nonnil (find-if  '(lambda (x) (string-match "main" x))
-                               (dojo-find-project-files project))))))
+   (lambda (project)
+     (assert-nonnil (find-if (lambda (x) (string-match "main" x))
+                             (dojo-find-project-files project))))))
 
 (deftest "Main file contains '$main'"
   (test-in-project
-   '(lambda (project)
-      (let ((shell-command (format "grep -o1 \\$main %s"
-                                   (dojo-find-main-file project))))
-        (assert-equal "$main\n"
-                      (shell-command-to-string shell-command))))))
+   (lambda (project)
+     (let ((shell-command (format "grep -o1 \\$main %s"
+                                  (dojo-find-main-file project))))
+       (assert-equal "$main\n"
+                     (shell-command-to-string shell-command))))))
 
 (deftest "Variable substitution in main file"
   (test-in-project
-   '(lambda (project)
-      (let* ((project-name (dojo-project-name project))
-             (main-file (dojo-find-main-file project)))
-        (dojo-substitute-variables project)
-        (assert-equal ""
-                      (shell-command-to-string (format "grep \\$main %s" main-file)))
-        (assert-equal (concat project-name "\n")
-                      (shell-command-to-string (format "grep -o1 %s %s" project-name main-file)))))))
+   (lambda (project)
+     (let* ((project-name (dojo-project-name project))
+            (main-file (dojo-find-main-file project)))
+       (dojo-substitute-variables project)
+       (assert-equal ""
+                     (shell-command-to-string (format "grep \\$main %s" main-file)))
+       (assert-equal (concat project-name "\n")
+                     (shell-command-to-string (format "grep -o1 %s %s" project-name main-file)))))))
 
 (deftest "Rename main file"
   (test-in-project
-   '(lambda (project)
-      (let ((main-file (dojo-find-main-file project)))
-        (dojo-rename-main-file project)
-        (assert-nil (file-exists-p main-file))))))
+   (lambda (project)
+     (let ((main-file (dojo-find-main-file project)))
+       (dojo-rename-main-file project)
+       (assert-nil (file-exists-p main-file))))))
 
 (deftest "Find test file"
   (test-in-project
-   '(lambda (project)
-      (assert-t (file-exists-p (dojo-find-test-file project))))))
+   (lambda (project)
+     (assert-t (file-exists-p (dojo-find-test-file project))))))
 
 (deftest "Creating an existing project fails"
   (let* ((project (make-dojo-project :name "autoTest"
