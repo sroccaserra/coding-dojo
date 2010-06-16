@@ -92,8 +92,8 @@
           (push "" path-patterns)))
 
 (defun dojo-substitute-variables (project)
-  (let* ((project-name (dojo-project-name project))
-         (files (dojo-find-project-files project)))
+  (let ((project-name (dojo-project-name project))
+        (files (dojo-find-project-files project)))
     (labels ((replace-main-in-file
               (file)
               (let ((auto-mode-alist '())) ;; disable modes that could start processes, like flymake mode
