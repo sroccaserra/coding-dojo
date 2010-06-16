@@ -96,16 +96,15 @@
          (files (dojo-find-project-files project)))
     (labels ((replace-main-in-file
               (file)
-              (save-excursion
+              (let ((auto-mode-alist '())) ;; disable modes that could start processes, like flymake mode
                 (with-current-buffer (find-file-noselect file t)
                   (unwind-protect
-                      (progn
-                        (goto-char 0)
+                      (save-current-buffer
+                        (goto-char (point-min))
                         (while (search-forward-regexp "\\$main\\>" nil t)
                           (replace-match project-name nil t))
                         (basic-save-buffer))
-                    (flet ((y-or-n-p (prompt) t))
-                      (kill-buffer)))))))
+                    (kill-this-buffer))))))
       (mapcar #'replace-main-in-file files))))
 
 (defun dojo-project-file (main-file project-name)
