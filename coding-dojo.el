@@ -76,7 +76,7 @@
 
 (defun dojo-find-main-file (project)
   (find-if  (lambda (x)
-              (string-match "main" x))
+              (string-match "\\<xxxx\\." x))
             (dojo-find-project-files project)))
 
 (defun dojo-find-test-file (project)
@@ -101,14 +101,23 @@
                   (unwind-protect
                       (save-current-buffer
                         (goto-char (point-min))
-                        (while (search-forward-regexp "\\$main\\>" nil t)
+                        (while (search-forward-regexp "\\<xxxx" nil t)
                           (replace-match project-name nil t))
                         (basic-save-buffer))
                     (kill-this-buffer))))))
       (mapcar #'replace-main-in-file files))))
 
 (defun dojo-project-file (main-file project-name)
-  (replace-regexp-in-string "main" project-name main-file))
+  (replace-regexp-in-string "\\<xxxx" project-name main-file))
+
+(defun dojo-rename-files (project)
+  (let ((project-files (dojo-find-project-files project))
+        (project-name (dojo-project-name project)))
+    (mapcar (lambda (file)
+              (let ((new-name (dojo-project-file file project-name)))
+                (unless (equal file new-name)
+                  (rename-file file new-name))))
+            project-files)))
 
 (defun dojo-rename-main-file (project)
   (let ((main-file (dojo-find-main-file project)))
@@ -141,7 +150,7 @@
     (dojo-create-project project)
     (dojo-substitute-variables project)
     (let ((main-file (dojo-find-main-file project)))
-      (dojo-rename-main-file project)
+      (dojo-rename-files project)
       (unless (eq "" *dojo-after-new-project-command*)
         (save-excursion
           (find-file (dojo-project-dir-for project))

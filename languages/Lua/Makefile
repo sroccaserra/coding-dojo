@@ -1,2 +1,2 @@
 test:
-	lua -e "require 'Tests';LuaUnit:run();os.exit(math.min(UnitResult.failureCount, 255))"
+	lua -e "require 'xxxxTest';LuaUnit:run();os.exit(math.min(UnitResult.failureCount, 255))"
