@@ -116,13 +116,8 @@
     (mapcar (lambda (file)
               (let ((new-name (dojo-project-file file project-name)))
                 (unless (equal file new-name)
-                  (rename-file file new-name))))
+                  (rename-file file new-name t))))
             project-files)))
-
-(defun dojo-rename-main-file (project)
-  (let ((main-file (dojo-find-main-file project)))
-    (rename-file main-file
-                 (dojo-project-file main-file (dojo-project-name project)))))
 
 (defun dojo-find-languages ()
   (let ((find-command (format "find %s -type d -maxdepth 1 -mindepth 1"

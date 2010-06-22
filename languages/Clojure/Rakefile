@@ -1,3 +1,5 @@
 task :default do
-    sh "clj -i test.clj -e '(clojure.test/run-tests (quote test))'"
+    sh "lein deps"
+    sh "lein swank"
+    # sh "clj -i test/xxxx_test.clj -e '(clojure.test/run-tests (quote xxxx-test))'"
 end
