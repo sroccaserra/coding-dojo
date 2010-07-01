@@ -1,5 +1,5 @@
 #
-# $main.py
+# xxxx.py
 #
 
 """ This docstring contains a doctest.

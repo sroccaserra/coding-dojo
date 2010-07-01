@@ -1,5 +1,5 @@
 #
-# test.py
+# xxxx_test.py
 #
 
 """ Doctests can be written in the main file, unittest can be written here.
@@ -10,7 +10,7 @@ And here: http://docs.python.org/library/unittest.html
 """
 
 import unittest
-from $main import *
+from xxxx import *
 
 class Tests(unittest.TestCase):
     def testFailure(self):
