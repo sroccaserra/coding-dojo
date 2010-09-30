@@ -64,36 +64,11 @@
   (assert-nonnil (find-if (lambda (x) (string-match "main" x))
                           '("toto" "test/main.lua"))))
 
-(deftest "Find main file"
-  (test-in-project
-   (lambda (project)
-     (assert-equal (concat *dojo-project-dir* "/AutoTest-lua/autoTest.lua")
-                   (dojo-find-main-file project)))))
-
 (deftest "File list contains main"
   (test-in-project
    (lambda (project)
      (assert-nonnil (find-if (lambda (file) (string-match "xxxx" file))
                              (dojo-find-project-files project))))))
-
-(deftest "Main file contains 'xxxx'"
-  (test-in-project
-   (lambda (project)
-     (let ((shell-command (format "grep -o1 xxxx %s"
-                                  (dojo-find-main-file project))))
-       (assert-equal "xxxx\n"
-                     (shell-command-to-string shell-command))))))
-
-(deftest "Variable substitution in all files"
-  (test-in-project
-   (lambda (project)
-     (let* ((project-name (dojo-project-name project))
-            (main-file (dojo-find-main-file project)))
-       (dojo-substitute-variables project)
-       (assert-equal ""
-                     (shell-command-to-string (format "grep -r xxxx %s" (dojo-project-dir-for project))))
-       (assert-equal (concat project-name "\n")
-                     (shell-command-to-string (format "grep -o1 %s %s" project-name main-file)))))))
 
 (deftest "Rename all files with xxxx in their name"
   (test-in-project
@@ -102,6 +77,34 @@
      (let ((project-files (dojo-find-project-files project)))
        (assert-nil (find-if (partial string-match "xxxx")
                             project-files))))))
+
+(deftest "Find main file"
+  (test-in-project
+   (lambda (project)
+     (dojo-rename-files project)
+     (assert-equal (concat (dojo-project-dir-for project) "/autoTest.lua")
+                   (dojo-find-main-file project)))))
+
+(deftest "Main file contains 'xxxx'"
+  (test-in-project
+   (lambda (project)
+     (dojo-rename-files project)
+     (let ((shell-command (format "grep -o1 xxxx %s"
+                                  (dojo-find-main-file project))))
+       (assert-equal "xxxx\n"
+                     (shell-command-to-string shell-command))))))
+
+(deftest "Variable substitution in all files"
+  (test-in-project
+   (lambda (project)
+     (dojo-rename-files project)
+     (let* ((project-name (dojo-project-name project))
+            (main-file (dojo-find-main-file project)))
+       (dojo-substitute-variables project)
+       (assert-equal ""
+                     (shell-command-to-string (format "grep -r xxxx %s" (dojo-project-dir-for project))))
+       (assert-equal (concat project-name "\n")
+                     (shell-command-to-string (format "grep -o1 %s %s" project-name main-file)))))))
 
 (deftest "Find test file"
   (test-in-project
