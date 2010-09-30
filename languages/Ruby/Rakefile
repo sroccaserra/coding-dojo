@@ -1,3 +1,3 @@
 task :default do
-    ruby %{-Ilib -Itest 'test/test_main.rb'}
+    ruby %{-Ilib -Itest 'test/unit/xxxx_test.rb'}
 end

@@ -67,7 +67,7 @@
 (deftest "Find main file"
   (test-in-project
    (lambda (project)
-     (assert-equal (concat *dojo-project-dir* "/AutoTest-lua/xxxx.lua")
+     (assert-equal (concat *dojo-project-dir* "/AutoTest-lua/autoTest.lua")
                    (dojo-find-main-file project)))))
 
 (deftest "File list contains main"

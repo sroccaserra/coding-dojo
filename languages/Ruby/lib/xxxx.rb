@@ -1,10 +1,10 @@
 #
-# $main.rb
+# xxxx.rb
 #
 
-def $main
+def xxxx
 end
 
 if __FILE__ == $0
-    $main
+    xxxx
 end
