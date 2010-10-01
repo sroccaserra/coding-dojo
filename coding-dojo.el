@@ -139,7 +139,7 @@
   (let ((project (make-dojo-project :name project-name
                                     :language (upcase-initials language))))
     (when (dojo-project-exists project)
-      (if (y-or-n-p "Project %s in language %s already exists, delete it?")
+      (if (y-or-n-p (format "Project %S in language %S already exists, delete it?" project-name language))
           (dired-delete-file (dojo-project-dir-for project) 'always)
         (error "Project %s in language %s already exists." project-name language)))
     (dojo-create-project project)
