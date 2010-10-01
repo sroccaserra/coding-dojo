@@ -76,7 +76,7 @@
 
 (defun dojo-find-main-file (project)
   (find-if  (lambda (x)
-              (string-match "\\<xxxx\\." x))
+              (string-match (concat "\\<" (regexp-quote (dojo-project-name project)) "\\.") x))
             (dojo-find-project-files project)))
 
 (defun dojo-find-test-file (project)
@@ -101,20 +101,17 @@
                   (unwind-protect
                       (save-current-buffer
                         (goto-char (point-min))
-                        (while (search-forward-regexp "\\<xxxx" nil t)
+                        (while (search-forward-regexp "xxxx" nil t)
                           (replace-match project-name nil t))
                         (basic-save-buffer))
                     (kill-this-buffer))))))
       (mapcar #'replace-main-in-file files))))
 
-(defun dojo-project-file (main-file project-name)
-  (replace-regexp-in-string "\\<xxxx" project-name main-file))
-
 (defun dojo-rename-files (project)
   (let ((project-files (dojo-find-project-files project))
         (project-name (dojo-project-name project)))
     (mapcar (lambda (file)
-              (let ((new-name (dojo-project-file file project-name)))
+              (let ((new-name (replace-regexp-in-string "xxxx" project-name file)))
                 (unless (equal file new-name)
                   (rename-file file new-name t))))
             project-files)))
@@ -144,14 +141,15 @@
         (error "Project %s in language %s already exists." project-name language)))
     (dojo-create-project project)
     (dojo-substitute-variables project)
+    (dojo-rename-files project)
+    (unless (eq "" *dojo-after-new-project-command*)
+      (save-excursion
+        (find-file (dojo-project-dir-for project))
+        (shell-command *dojo-after-new-project-command*)
+        (kill-buffer)))
     (let ((main-file (dojo-find-main-file project)))
-      (dojo-rename-files project)
-      (unless (eq "" *dojo-after-new-project-command*)
-        (save-excursion
-          (find-file (dojo-project-dir-for project))
-          (shell-command *dojo-after-new-project-command*)
-          (kill-buffer)))
-      (find-file (dojo-project-file main-file project-name))
-      (find-file (dojo-find-test-file project)))))
+      (when main-file
+        (find-file main-file)
+        (find-file (dojo-find-test-file project))))))
 
 (provide 'coding-dojo)
